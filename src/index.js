@@ -18,7 +18,7 @@ app.use("/auth",authRouter)
 app.use("/profile",profileRouter)
 
 app.use((err, req, res, next) => {
-    res.status(400).send("Something went wrong" + err)
+    res.status(400).send("Something went wrong" + err.message)
 })
 
 connectDB().then(() => {
