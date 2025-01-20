@@ -4,21 +4,18 @@ const connectDB = require("./config/database");
 const cookieParser = require("cookie-parser")
 const app = express();
 const authRouter = require("./routes/authRouter")
-
 const profileRouter=require("./routes/profileRouter")
+
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true,
-
 }));
 
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.use("/auth",authRouter)
 app.use("/profile",profileRouter)
-
-
 
 app.use((err, req, res, next) => {
     res.status(400).send("Something went wrong" + err)
