@@ -1,36 +1,28 @@
+//this middleware will verify token for all 
+const jwt = require("jsonwebtoken")
 
-
-
-const validator=require("validator")
-const z=require("zod");
-function signUpMiddleware(req,res,next){
-
-    try{
-        const {email,password,firstName}=req.body;
-
-    
-        if(!firstName){
-            throw new Error("No first name")
-            
+const isValidRequestToken=async(req,res,next)=>{
+    try {
+        const {token}=req.cookies;
+        if(!token){
+            res.status(401).json({
+                message:"Unauthorized"
+            })
         }
-        else if(!validator.isEmail(email)){
-            throw new Error("Invalid Email")
+        //verify the token
+        const decodedMessage=await jwt.verify(token,"secret")
+        if (!decodedMessage?._id) {
+            res.status(400).json({
+                message:"Invalid user"
+            })
         }
-        else if(!validator.isStrongPassword(password)){
-            throw new Error("Invalid Password")
-        }else{
-    
-            req.email=email,
-            req.password=password,
-            req.firstName=firstName
-            next();
-        }
+        //set the _id in the request object
         
+        req._id=decodedMessage?._id;
+        next()
+    } catch (error) {
+        throw new Error("Something went wrong")
     }
-    catch(error){
-        res.status(400).send("ERROR: " + error.message);
-    }
-   
 }
 
-module.exports = signUpMiddleware;
+module.exports=isValidRequestToken;
