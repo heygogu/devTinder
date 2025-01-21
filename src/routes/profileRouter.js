@@ -36,7 +36,7 @@ profileRouter.get("/view",isValidRequestToken,async (req,res)=>{
 profileRouter.patch("/edit",isValidRequestToken,async (req,res)=>{
     try{
         const _id=req?._id;
-        const {firstName,lastName,age,profilePhoto,bio}=req.body;
+        // const {firstName,lastName,age,profilePhoto,bio}=req.body;
 
         //check for user in db
         const user=await User.findById(
@@ -49,13 +49,15 @@ profileRouter.patch("/edit",isValidRequestToken,async (req,res)=>{
         }
 
         //assigning new values and saving the user
-        Object.assign(user, {
-            firstName: firstName || user.firstName,
-            lastName: lastName || user.lastName,
-            age: age || user.age,
-            profilePhoto: profilePhoto || user.profilePhoto,
-            bio: bio || user.bio
-        });
+        // Object.assign(user, {
+        //     firstName: firstName || user.firstName,
+        //     lastName: lastName || user.lastName,
+        //     age: age || user.age,
+        //     profilePhoto: profilePhoto || user.profilePhoto,
+        //     bio: bio || user.bio
+        // });
+
+        Object.keys(req.body).every((key)=>user[key]=req.body[key])
 
         await user.save();
 
@@ -65,7 +67,9 @@ profileRouter.patch("/edit",isValidRequestToken,async (req,res)=>{
 
     }
     catch(error){
-        throw new Error(error)
+        return res.status(400).json({
+            message:error.message
+        })
     }
 
 })

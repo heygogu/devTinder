@@ -60,11 +60,11 @@ authRouter.post("/login", async (req, res) => {
 
         res.cookie("token", token)
 
-        res.status(200).send("Log in successful")
+       return res.status(200).send("Log in successful")
 
 
     } catch (error) {
-        res.status(400).json({
+       return res.status(400).json({
             message: "Something went wrong",
             error: error.message
         })
@@ -110,7 +110,9 @@ authRouter.post("/login", async (req, res) => {
 
 authRouter.post("/logout",(req,res)=>{
     res.clearCookie("token")
-    res.status(200).send("Logged out successfully")
+
+    //or I can do res.cookie("token",null,{expires:new Date(Date.now())}).send("Logout successful")
+    return res.status(200).send("Logged out successfully")
 })
 
 module.exports=authRouter;
