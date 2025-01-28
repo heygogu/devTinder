@@ -6,6 +6,7 @@ const app = express();
 const authRouter = require("./routes/authRouter")
 const profileRouter=require("./routes/profileRouter")
 const requestRouter=require("./routes/requestRouter")
+const userRouter=require("./routes/userRouter")
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true,
@@ -17,6 +18,7 @@ app.use(cookieParser());
 app.use("/auth",authRouter)
 app.use("/profile",profileRouter)
 app.use("/request",requestRouter)
+app.use("/user",userRouter)
 
 app.use((err, req, res, next) => {
     res.status(400).send("Something went wrong" + err.message)

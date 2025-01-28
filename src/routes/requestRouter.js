@@ -77,4 +77,29 @@ requestRouter.post("/send/:status/:userId", isValidRequestToken, async (req, res
     }
 })
 
+requestRouter.post("/review/:status/:requestId",isValidRequestToken,async(req,res)=>{
+    try {
+        const userId=req._id;
+        const allowedStatus=["ignored","rejected"]
+        const requestId=req.params.requestId
+        const status=req.params.status;
+        if(!allowedStatus.includes(status)){
+           return res.status(400).json({
+                message:"Invalid status"
+            })
+        }
+
+        const connectionRequest=await ConnectionRequest.findOne({_id:requestId},{toUserId:userId},{status:"interested"})
+        if(!connectionRequest){
+            throw new Error("Invalid request")
+        }
+
+        connectionRequest.status=status;
+        await connectionRequest.save()
+        res.json({message:"Request review successful"})
+    } catch (error) {
+        throw new error(error)
+    }
+})
+
 module.exports = requestRouter
